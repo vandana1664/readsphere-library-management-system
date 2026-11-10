@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Shelf | ReadSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="explore-page">
+
+<nav class="student-navbar">
+    <a href="{{ url_for('student_home') }}" class="student-brand">
+        📚 ReadSphere
+    </a>
+
+    <div>
+        <a href="{{ url_for('student_home') }}">Home</a>
+        <a href="{{ url_for('explore_books') }}">Explore Books</a>
+        <a href="{{ url_for('my_shelf') }}">My Shelf</a>
+    </div>
+
+    <div>
+        {{ session.get('name') }}
+        <a href="{{ url_for('logout') }}" class="student-logout">
+            Logout
+        </a>
+    </div>
+</nav>
+
+<main class="book-detail-container">
+
+    <p class="detail-label">YOUR PERSONAL COLLECTION</p>
+    <h1>My Shelf</h1>
+    <p>Manage your borrowed books and track your return dates.</p>
+
+    <!-- NOTIFICATION MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if borrowed_books %}
+
+    <div class="shelf-grid">
+
+        {% for book in borrowed_books %}
+
+        <div class="shelf-card">
+
+            <div class="shelf-icon">📖</div>
+
+            <div class="shelf-info">
+
+                <h3>{{ book[1] }}</h3>
+                <p>By {{ book[2] }}</p>
+
+                <div class="detail-divider"></div>
+
+                <p><strong>Borrow ID:</strong> {{ book[0] }}</p>
+                <p><strong>Accession No:</strong> {{ book[3] }}</p>
+
+                <p>
+                    <strong>Issue Date:</strong>
+                    {{ book[4].strftime('%d-%m-%Y') if book[4] else 'N/A' }}
+                </p>
+
+                <p>
+                    <strong>Due Date:</strong>
+                    {{ book[5].strftime('%d-%m-%Y') if book[5] else 'N/A' }}
+                </p>
+
+                {% if book[6] %}
+                <p>
+                    <strong>Return Date:</strong>
+                    {{ book[6].strftime('%d-%m-%Y') }}
+                </p>
+                {% endif %}
+
+                <span class="shelf-status {{ book[8]|lower }}">
+                    {{ book[8] }}
+                </span>
+
+                {% if book[8] == 'Active' or book[8] == 'Overdue' %}
+                   
+<form method="POST"
+      action="{{ url_for('student_return_book', borrow_id=book[0]) }}"
+      onsubmit="return confirm('Are you sure you want to return this book?');">
+
+    <button type="submit" class="student-primary-btn">
+        Return Book
+    </button>
+
+</form>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-books">
+        <div style="font-size:50px;">📚</div>
+        <h3>Your shelf is empty</h3>
+        <p>You haven't borrowed any books yet.</p>
+
+        <a href="{{ url_for('explore_books') }}"
+           class="student-primary-btn">
+            Explore Books
+        </a>
+    </div>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>

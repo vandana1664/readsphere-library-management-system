@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book | Next Gen Library</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">📚 Next Gen Library</div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/books" class="active">Books</a>
+            <a href="/students">Students</a>
+            <a href="/borrow">Borrow Records</a>
+        </nav>
+
+        <div class="sidebar-footer">Library Management System</div>
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+            <div>
+                <h1>Add New Book</h1>
+                <p>Enter the details of the new book.</p>
+            </div>
+        </header>
+
+        <section class="table-box">
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" action="/books/add" class="book-form">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>ISBN Number</label>
+                        <input type="text" name="isbn" required>
+                    </div>
+
+                    <div>
+                        <label>Book Name</label>
+                        <input type="text" name="book_name" required>
+                    </div>
+
+                    <div>
+                        <label>Author</label>
+                        <input type="text" name="author" required>
+                    </div>
+
+                    <div>
+                        <label>Publisher</label>
+                        <input type="text" name="publisher" required>
+                    </div>
+
+                    <div>
+                        <label>Price</label>
+                        <input type="number" name="price" min="0" step="0.01" required>
+                    </div>
+
+                    <div>
+                        <label>Publication Year</label>
+                        <input type="number" name="year" min="1000" max="9999" required>
+                    </div>
+
+                    <div>
+                        <label>Edition</label>
+                        <input type="text" name="edition" required>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="view-button">Save Book</button>
+                    <a href="/books" class="reset-button">Cancel</a>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

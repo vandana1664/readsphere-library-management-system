@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fine Management | Next Gen Library</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">📚 Next Gen Library</div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/books">Books</a>
+            <a href="/students">Students</a>
+            <a href="/borrow">Borrow Records</a>
+            <a href="/fines" class="active">Fine Management</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            Library Management System
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+            <div>
+                <h1>Fine Management</h1>
+                <p>Monitor calculated and outstanding library fines.</p>
+            </div>
+        </header>
+
+        <!-- FINE SUMMARY -->
+
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-icon">💰</div>
+                <p>Total Fine Amount</p>
+                <h2>₹{{ "%.2f"|format(total_fines) }}</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📚</div>
+                <p>Fines on Returned Books</p>
+                <h2>₹{{ "%.2f"|format(fines_on_returned_books) }}</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">⏳</div>
+                <p>Outstanding Fines</p>
+                <h2>₹{{ "%.2f"|format(outstanding_fines) }}</h2>
+            </div>
+
+        </section>
+
+        <!-- FINE RECORDS -->
+
+        <section class="table-box">
+
+            <div class="table-header">
+                <div>
+                    <h2>Fine Records</h2>
+                    <p>Student-wise overdue fine details.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Borrow ID</th>
+                            <th>Enrollment ID</th>
+                            <th>Book Name</th>
+                            <th>Due Date</th>
+                            <th>Return Date</th>
+                            <th>Fine Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for record in fine_records %}
+
+                        <tr>
+
+                            <td>{{ record[0] }}</td>
+
+                            <td class="book-name">
+                                {{ record[1] }}
+                            </td>
+
+                            <td>{{ record[2] }}</td>
+
+                            <td>
+                                {{ record[3].strftime('%d-%m-%Y') if record[3] else '-' }}
+                            </td>
+
+                            <td>
+                                {{ record[4].strftime('%d-%m-%Y') if record[4] else 'Not Returned' }}
+                            </td>
+
+                            <td class="book-name">
+                                ₹{{ "%.2f"|format(record[5] or 0) }}
+                            </td>
+
+                            <td>
+                                {% if record[6] == 'Returned' %}
+                                    <span class="status-returned">
+                                        Returned
+                                    </span>
+
+                                {% elif record[6] == 'Overdue' %}
+                                    <span class="fine-overdue">
+                                        Overdue
+                                    </span>
+
+                                {% else %}
+                                    <span class="fine-normal">
+                                        Not Overdue
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="7">
+                                No borrowing records available.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <footer>
+            © 2026 Next Gen Library Management System
+        </footer>
+
+    </main>
+
+</body>
+</html>

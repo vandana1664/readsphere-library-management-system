@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details | ReadSphere</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="explore-page">
+
+<nav class="student-navbar">
+    <a href="{{ url_for('student_home') }}" class="student-brand">
+        📚 ReadSphere
+    </a>
+
+    <div>
+        <a href="{{ url_for('student_home') }}">Home</a>
+        <a href="{{ url_for('explore_books') }}">Explore Books</a>
+        <a href="{{ url_for('my_shelf') }}">My Shelf</a>
+    </div>
+
+    <div>
+        {{ session.get('name') }}
+        <a href="{{ url_for('logout') }}" class="student-logout">Logout</a>
+    </div>
+</nav>
+
+<main class="book-detail-container">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+    <a href="{{ url_for('explore_books') }}" class="back-link">
+        ← Back to Explore Books
+    </a>
+
+    <section class="book-detail-card">
+
+        <div class="book-detail-cover">
+            📖
+        </div>
+
+        <div class="book-detail-info">
+
+            <p class="detail-label">READSPHERE COLLECTION</p>
+
+            <h1>{{ book[1] }}</h1>
+
+            <p class="detail-author">By {{ book[2] }}</p>
+
+            <div class="detail-divider"></div>
+
+            <p><strong>ISBN:</strong> {{ book[0] }}</p>
+            <p><strong>Publisher:</strong> {{ book[3] }}</p>
+            <p><strong>Publication Year:</strong> {{ book[5] or 'Not specified' }}</p>
+            <p><strong>Edition:</strong> {{ book[6] or 'Not specified' }}</p>
+            <p><strong>Price:</strong> ₹{{ "%.2f"|format(book[4] or 0) }}</p>
+
+            <p>
+                <strong>Available Copies:</strong>
+                {{ book[7] }}
+            </p>
+
+            <p>
+                <strong>Total Copies:</strong>
+                {{ book[8] }}
+            </p>
+
+            {% if book[7] > 0 %}
+                <span class="availability available">
+                    Available for Borrowing
+                </span>
+
+                <form method="POST"
+                      action="{{ url_for('borrow_book', isbn=book[0]) }}">
+
+                    <button type="submit" class="student-primary-btn">
+                        Borrow This Book →
+                    </button>
+
+                </form>
+
+            {% else %}
+                <span class="availability unavailable">
+                    Currently Unavailable
+                </span>
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

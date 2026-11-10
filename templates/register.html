@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadSphere | Register</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="register-page">
+
+<div class="register-wrapper">
+
+    <!-- LEFT ILLUSTRATION -->
+    <div class="register-illustration">
+
+        <h1>ReadSphere</h1>
+        <h2>Start Your Reading Journey.</h2>
+
+        <div class="library-art">
+            <div class="shelf">
+                <div class="book book-one"></div>
+                <div class="book book-two"></div>
+                <div class="book book-three"></div>
+                <div class="book book-four"></div>
+                <div class="book book-five"></div>
+            </div>
+
+            <div class="open-book">
+                <div class="page left-page"></div>
+                <div class="page right-page"></div>
+            </div>
+        </div>
+
+        <p>Create your account and discover a world of knowledge.</p>
+
+    </div>
+
+    <!-- RIGHT REGISTRATION FORM -->
+    <div class="register-form-section">
+
+        <h2>Join ReadSphere</h2>
+        <p class="register-subtitle">
+            Create your student account to get started.
+        </p>
+
+        {% if error %}
+            <div class="alert error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('register') }}">
+
+            <div class="register-field">
+                <label>Full Name</label>
+                <input type="text"
+                       name="name"
+                       placeholder="Enter your full name"
+                       maxlength="50"
+                       required>
+            </div>
+
+            <div class="register-field">
+                <label>Email Address</label>
+                <input type="email"
+                       name="email"
+                       placeholder="Enter your email"
+                       maxlength="100"
+                       required>
+            </div>
+
+            <div class="register-field">
+                <label>Enrollment ID</label>
+                <input type="text"
+                       name="enroll_id"
+                       placeholder="Enter enrollment ID"
+                       maxlength="20"
+                       required>
+            </div>
+
+            <div class="register-field">
+                <label>Contact Number</label>
+                <input type="tel"
+                       name="contact"
+                       placeholder="10-digit mobile number"
+                       pattern="[0-9]{10}"
+                       maxlength="10"
+                       required>
+            </div>
+
+            <div class="register-field">
+                <label>Department</label>
+                <select name="department" required>
+                    <option value="">Select Department</option>
+
+                    {% for department in departments %}
+                        <option value="{{ department }}">
+                            {{ department }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="register-field">
+                <label>Password</label>
+                <input type="password"
+                       name="password"
+                       placeholder="Create a password"
+                       minlength="8"
+                       required>
+                <small>Minimum 8 characters, including uppercase, lowercase and a number.</small>
+            </div>
+
+            <div class="register-field">
+                <label>Confirm Password</label>
+                <input type="password"
+                       name="confirm_password"
+                       placeholder="Confirm your password"
+                       required>
+            </div>
+
+            <button type="submit">Create Account</button>
+
+        </form>
+
+        <div class="register-bottom">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Sign in</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

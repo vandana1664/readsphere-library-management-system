@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Next Gen Library Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            📚 Next Gen Library
+        </div>
+
+        <nav>
+            <a href="/" class="active">Dashboard</a>
+            <a href="/books">Books</a>
+            <a href="/students">Students</a>
+            <a href="/borrow">Borrow Records</a>
+            <a href="/fines">Fine Management</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            Library Management System
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="header">
+            <div>
+                <h1>Library Dashboard</h1>
+                <p>Welcome to your library management system.</p>
+            </div>
+
+            <div class="admin">
+                <span>Administrator</span>
+                <div class="avatar">A</div>
+            </div>
+        </header>
+
+
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-icon">📚</div>
+                <p>Total Books</p>
+                <h2>{{ total_books }}</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">👨‍🎓</div>
+                <p>Total Students</p>
+                <h2>{{ total_students }}</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📖</div>
+                <p>Borrow Records</p>
+                <h2>{{ total_borrows }}</h2>
+            </div>
+
+        </section>
+
+
+        <section class="table-box">
+
+            <div class="table-header">
+                <div>
+                    <h2>Library Collection</h2>
+                    <p>Books currently registered in the library</p>
+                </div>
+
+                <a href="/books" class="view-button">
+                    Manage Books →
+                </a>
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ISBN</th>
+                            <th>Book Name</th>
+                            <th>Author</th>
+                            <th>Publisher</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for book in books %}
+
+                        <tr>
+                            <td>{{ book[0] }}</td>
+                            <td class="book-name">{{ book[1] }}</td>
+                            <td>{{ book[2] }}</td>
+                            <td>{{ book[3] }}</td>
+                            <td>₹{{ "%.2f"|format(book[4]) }}</td>
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="5">No books found.</td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <footer>
+            © 2026 Next Gen Library Management System
+        </footer>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">📚 Next Gen Library</div>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/books" class="active">Books</a>
+            <a href="/students">Students</a>
+            <a href="/borrow">Borrow Records</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+            <div>
+                <h1>Edit Book</h1>
+                <p>Update the selected book details.</p>
+            </div>
+        </header>
+
+        <section class="table-box">
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST"
+                  action="/books/edit/{{ book[0] }}"
+                  class="book-form">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>ISBN Number</label>
+                        <input type="text" value="{{ book[0] }}" disabled>
+                    </div>
+
+                    <div>
+                        <label>Book Name</label>
+                        <input type="text" name="book_name"
+                               value="{{ book[1] }}" required>
+                    </div>
+
+                    <div>
+                        <label>Author</label>
+                        <input type="text" name="author"
+                               value="{{ book[2] }}" required>
+                    </div>
+
+                    <div>
+                        <label>Publisher</label>
+                        <input type="text" name="publisher"
+                               value="{{ book[3] }}" required>
+                    </div>
+
+                    <div>
+                        <label>Price</label>
+                        <input type="number" name="price"
+                               value="{{ book[4] }}" min="0"
+                               step="0.01" required>
+                    </div>
+
+                    <div>
+                        <label>Publication Year</label>
+                        <input type="number" name="year"
+                               value="{{ book[5] }}" min="1000"
+                               max="9999" required>
+                    </div>
+
+                    <div>
+                        <label>Edition</label>
+                        <input type="text" name="edition"
+                               value="{{ book[6] }}" required>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="view-button">
+                        Update Book
+                    </button>
+
+                    <a href="/books" class="reset-button">Cancel</a>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

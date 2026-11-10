@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Issue Book | Next Gen Library</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">📚 Next Gen Library</div>
+
+    <nav>
+        <a href="/">Dashboard</a>
+        <a href="/books">Books</a>
+        <a href="/students">Students</a>
+        <a href="/borrow" class="active">Borrow Records</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        Library Management System
+    </div>
+
+</div>
+
+
+<div class="main">
+
+    <div class="header">
+
+        <div>
+            <h1>Issue a Book</h1>
+            <p>Assign a book to a registered student.</p>
+        </div>
+
+        <a href="/borrow" class="cancel-link">
+            ← Back to Records
+        </a>
+
+    </div>
+
+
+    <div class="issue-layout">
+
+        <!-- ISSUE FORM -->
+
+        <div class="issue-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <h2>New Book Issue</h2>
+                    <p>Complete the details below.</p>
+                </div>
+
+                <span class="step-badge">NEW ISSUE</span>
+
+            </div>
+
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+
+            <form method="POST"
+                  action="{{ url_for('issue_book') }}"
+                  id="issueForm">
+
+
+                <!-- STUDENT SELECTION -->
+
+                <div class="field-group">
+
+                    <label for="studentSelect">
+                        Select Student
+                    </label>
+
+                    <select name="enroll_id"
+                            id="studentSelect"
+                            required>
+
+                        <option value="">
+                            Choose a student
+                        </option>
+
+                        {% for student in students %}
+
+                        <option value="{{ student[0] }}"
+                            {% if selected_student == student[0] %}selected{% endif %}>
+                            {{ student[0] }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <small>
+                        Select an existing registered student.
+                    </small>
+
+                </div>
+
+
+                <!-- BOOK SELECTION -->
+
+                <div class="field-group">
+
+                    <label for="bookSelect">
+                        Select Available Book
+                    </label>
+
+                    <select name="accession_no"
+                            id="bookSelect"
+                            required>
+
+                        <option value="">
+                            Choose an available book
+                        </option>
+
+                        {% for book in available_books %}
+
+                        <option
+                            value="{{ book[0] }}"
+                            data-title="{{ book[1] }}"
+                            data-isbn="{{ book[2] }}"
+                            {% if selected_accession == book[0] %}selected{% endif %}
+                        >
+                            {{ book[1] }} - Copy #{{ book[0] }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    {% if not available_books %}
+
+                    <small>
+                        No book copies are currently available.
+                    </small>
+
+                    {% else %}
+
+                    <small>
+                        Only available book copies are displayed.
+                    </small>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- ISSUE DATE -->
+
+                <div class="field-group">
+
+                    <label for="issueDateInput">
+                        Issue Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="issue_date"
+                        id="issueDateInput"
+                        value="{{ selected_issue_date or '' }}"
+                        min="{{ today }}"
+                        required
+                    >
+
+                    <small>
+                        Select the date on which the book is issued.
+                    </small>
+
+                </div>
+
+
+                <!-- DUE DATE -->
+
+                <div class="field-group">
+
+                    <label for="dueDateInput">
+                        Due Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="dueDateInput"
+                        readonly
+                    >
+
+                    <small>
+                        Automatically calculated as 14 days after the issue date.
+                    </small>
+
+                    <input
+                        type="hidden"
+                        name="due_date"
+                        id="dueDateHidden"
+                    >
+
+                </div>
+
+
+                <!-- ISSUE INFORMATION -->
+
+                <div class="issue-details">
+
+                    <div class="detail-item">
+                        <span>Issue Date</span>
+                        <strong id="summaryIssueDate">Not selected</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Due Date</span>
+                        <strong id="summaryDueDate">Not calculated</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Duration</span>
+                        <strong>14 Days</strong>
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <button type="submit"
+                        class="issue-submit"
+                        id="issueButton"
+                        {% if not available_books %}disabled{% endif %}>
+
+                    <span>Confirm Book Issue</span>
+                    <span>→</span>
+
+                </button>
+
+
+                <a href="/borrow" class="cancel-button">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+
+        <!-- LIVE PREVIEW -->
+
+        <div class="preview-panel">
+
+            <div class="preview-icon">📖</div>
+
+            <span class="preview-label">
+                ISSUE PREVIEW
+            </span>
+
+            <h2 id="previewTitle">
+                Your selected book
+            </h2>
+
+            <p id="previewSubtitle">
+                Book details will appear here after selection.
+            </p>
+
+
+            <div class="preview-divider"></div>
+
+
+            <div class="preview-row">
+                <span>Student</span>
+                <strong id="previewStudent">Not selected</strong>
+            </div>
+
+            <div class="preview-row">
+                <span>Accession No.</span>
+                <strong id="previewAccession">Not selected</strong>
+            </div>
+
+            <div class="preview-row">
+                <span>ISBN</span>
+                <strong id="previewISBN">Not selected</strong>
+            </div>
+
+
+            <div class="preview-divider"></div>
+
+
+            <div class="availability">
+
+                <span class="availability-dot"></span>
+
+                <span id="availabilityText">
+                    Waiting for selection
+                </span>
+
+            </div>
+
+
+            <p class="preview-note">
+                The selected book will be marked unavailable after successful issue.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+// ================= ELEMENTS =================
+
+const studentSelect = document.getElementById("studentSelect");
+const bookSelect = document.getElementById("bookSelect");
+
+const issueDateInput = document.getElementById("issueDateInput");
+const dueDateInput = document.getElementById("dueDateInput");
+const dueDateHidden = document.getElementById("dueDateHidden");
+
+const previewTitle = document.getElementById("previewTitle");
+const previewSubtitle = document.getElementById("previewSubtitle");
+
+const previewStudent = document.getElementById("previewStudent");
+const previewAccession = document.getElementById("previewAccession");
+const previewISBN = document.getElementById("previewISBN");
+
+const availabilityText = document.getElementById("availabilityText");
+
+const summaryIssueDate = document.getElementById("summaryIssueDate");
+const summaryDueDate = document.getElementById("summaryDueDate");
+
+const issueForm = document.getElementById("issueForm");
+
+
+// ================= DATE FUNCTIONS =================
+
+function formatLocalDate(date) {
+
+    const year = date.getFullYear();
+
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+function displayDate(dateString) {
+
+    if (!dateString) {
+        return "Not selected";
+    }
+
+    const date = new Date(dateString + "T12:00:00");
+
+    return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+
+// ================= CALCULATE DUE DATE =================
+
+function calculateDueDate() {
+
+    const selectedDate = issueDateInput.value;
+
+    if (!selectedDate) {
+
+        dueDateInput.value = "";
+        dueDateHidden.value = "";
+
+        summaryIssueDate.textContent = "Not selected";
+        summaryDueDate.textContent = "Not calculated";
+
+        return;
+    }
+
+    const issueDate = new Date(selectedDate + "T12:00:00");
+
+    const dueDate = new Date(issueDate);
+
+    dueDate.setDate(dueDate.getDate() + 14);
+
+    const dueDateString = formatLocalDate(dueDate);
+
+    dueDateInput.value = dueDateString;
+
+    dueDateHidden.value = dueDateString;
+
+    summaryIssueDate.textContent = displayDate(selectedDate);
+
+    summaryDueDate.textContent = displayDate(dueDateString);
+}
+
+
+// ================= LIVE BOOK PREVIEW =================
+
+function updatePreview() {
+
+    const student = studentSelect.value;
+
+    const selectedBook =
+        bookSelect.options[bookSelect.selectedIndex];
+
+    previewStudent.textContent =
+        student || "Not selected";
+
+
+    if (bookSelect.value) {
+
+        previewTitle.textContent =
+            selectedBook.dataset.title;
+
+        previewSubtitle.textContent =
+            "Selected book copy";
+
+        previewAccession.textContent =
+            bookSelect.value;
+
+        previewISBN.textContent =
+            selectedBook.dataset.isbn;
+
+        availabilityText.textContent =
+            "Available for issue";
+
+    } else {
+
+        previewTitle.textContent =
+            "Your selected book";
+
+        previewSubtitle.textContent =
+            "Book details will appear here after selection.";
+
+        previewAccession.textContent =
+            "Not selected";
+
+        previewISBN.textContent =
+            "Not selected";
+
+        availabilityText.textContent =
+            "Waiting for selection";
+    }
+}
+
+
+// ================= EVENT LISTENERS =================
+
+issueDateInput.addEventListener(
+    "change",
+    calculateDueDate
+);
+
+studentSelect.addEventListener(
+    "change",
+    updatePreview
+);
+
+bookSelect.addEventListener(
+    "change",
+    updatePreview
+);
+
+
+// ================= FORM VALIDATION =================
+
+issueForm.addEventListener("submit", function(event) {
+
+    if (!studentSelect.value || !bookSelect.value) {
+
+        event.preventDefault();
+
+        alert("Please select a student and a book.");
+
+        return;
+    }
+
+    if (!issueDateInput.value || !dueDateHidden.value) {
+
+        event.preventDefault();
+
+        alert("Please select an issue date.");
+
+        return;
+    }
+
+    const issueDate =
+        new Date(issueDateInput.value + "T12:00:00");
+
+    const dueDate =
+        new Date(dueDateHidden.value + "T12:00:00");
+
+    const difference =
+        Math.round((dueDate - issueDate) / 86400000);
+
+    if (difference !== 14) {
+
+        event.preventDefault();
+
+        alert("The borrowing period must be exactly 14 days.");
+
+        return;
+    }
+
+    const confirmed = confirm(
+        "Confirm Book Issue?\n\n" +
+        "Student: " + studentSelect.value + "\n" +
+        "Book: " +
+        bookSelect.options[bookSelect.selectedIndex].dataset.title +
+        "\nIssue Date: " + displayDate(issueDateInput.value) +
+        "\nDue Date: " + displayDate(dueDateHidden.value)
+    );
+
+    if (!confirmed) {
+        event.preventDefault();
+    }
+
+});
+
+
+// ================= INITIALIZE =================
+
+calculateDueDate();
+updatePreview();
+
+</script>
+
+</body>
+</html>

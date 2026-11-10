@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow Records | Next Gen Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>📚 Next Gen Library</h2>
+
+    <a href="/">Dashboard</a>
+    <a href="/books">Books</a>
+    <a href="/students">Students</a>
+    <a href="/borrow" class="active">Borrow Records</a>
+    <a href="/fines">Fine Management</a>
+</div>
+
+<div class="main">
+
+    <div class="header">
+        <div>
+            <h1>Borrow Records</h1>
+            <!-- NOTIFICATION MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="notification notification-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+            <p>Manage issued and returned books.</p>
+        </div>
+
+        <a href="/borrow/issue" class="btn">+ Issue Book</a>
+    </div>
+
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Borrow ID</th>
+                    <th>Enrollment ID</th>
+                    <th>Accession No.</th>
+                    <th>Book Name</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Fine Amount</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record[0] }}</td>
+                    <td>{{ record[1] }}</td>
+                    <td>{{ record[2] }}</td>
+                    <td>{{ record[3] }}</td>
+                    <td>{{ record[4].strftime('%d-%m-%Y') if record[4] else '-' }}</td>
+                    <td>{{ record[5].strftime('%d-%m-%Y') if record[5] else '-' }}</td>
+                    <td>{{ record[6].strftime('%d-%m-%Y') if record[6] else '-' }}</td>
+                    <td>₹{{ record[7] or 0 }}</td>
+                    <td>{{ record[8] }}</td>
+
+                    <td>
+                        {% if record[6] is none %}
+                            <form method="POST"
+                                  action="{{ url_for('return_book', borrow_id=record[0]) }}"
+                                  onsubmit="return confirm('Are you sure you want to return this book?');">
+                                <button type="submit" class="btn">
+                                    Return
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="status-returned">Returned</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="10">No borrowing records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

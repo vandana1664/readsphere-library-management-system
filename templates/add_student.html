@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">📚 Next Gen Library</div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/books">Books</a>
+            <a href="/students" class="active">Students</a>
+            <a href="/borrow">Borrow Records</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+            <div>
+                <h1>Add New Student</h1>
+                <p>Enter student registration details.</p>
+            </div>
+        </header>
+
+        <section class="table-box">
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" action="/students/add" class="book-form">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Enrollment ID</label>
+                        <input type="text" name="enroll_id" required>
+                    </div>
+
+                    <div>
+                        <label>Contact Number</label>
+                        <input type="tel" name="contact_no"
+                               pattern="[0-9]{10}" maxlength="10" required>
+                    </div>
+
+                    <div>
+                        <label>User ID</label>
+                        <input type="number" name="user_id" required>
+                    </div>
+
+                    <div>
+                        <label>Department</label>
+                        <input type="text" name="dept_name" required>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="view-button">
+                        Save Student
+                    </button>
+
+                    <a href="/students" class="reset-button">Cancel</a>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

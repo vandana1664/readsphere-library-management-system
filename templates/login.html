@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadSphere | Login</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="auth-page">
+
+<div class="auth-wrapper">
+
+    <!-- LEFT SIDE -->
+    <div class="auth-illustration">
+
+        <h1>ReadSphere</h1>
+        <h2>Explore. Discover. Read.</h2>
+
+        <div class="library-art">
+            <div class="shelf">
+                <div class="book book-one"></div>
+                <div class="book book-two"></div>
+                <div class="book book-three"></div>
+                <div class="book book-four"></div>
+                <div class="book book-five"></div>
+            </div>
+
+            <div class="open-book">
+                <div class="page left-page"></div>
+                <div class="page right-page"></div>
+            </div>
+        </div>
+
+        <p>Your next favourite book is waiting for you.</p>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="auth-form-section">
+
+        <h2>Welcome Back!</h2>
+        <p class="auth-subtitle">
+            Sign in to continue your reading journey.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+
+            <label>Email Address</label>
+            <input type="email" name="email"
+                   placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="password" name="password"
+                   placeholder="Enter your password" required>
+
+            <label>Login As</label>
+            <select name="role" required>
+                <option value="">Select your role</option>
+                <option value="student">Student</option>
+                <option value="librarian">Librarian</option>
+            </select>
+
+            <button type="submit">Sign In</button>
+
+        </form>
+
+        <div class="auth-bottom">
+            New student?
+            <a href="{{ url_for('register') }}">Create an account</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

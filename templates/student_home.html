@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadSphere | Student Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="student-page">
+
+    <nav class="student-navbar">
+        <div class="student-logo">📚 ReadSphere</div>
+
+        <div class="student-nav-links">
+            <a href="{{ url_for('student_home') }}" class="active">Home</a>
+            <a href="#">Explore Books</a>
+           <a href="{{ url_for('my_shelf') }}">My Shelf</a>
+        </div>
+
+        <div class="student-profile">
+            <span>{{ name }}</span>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <main class="student-main">
+
+        <section class="student-welcome">
+            <div>
+                <p class="welcome-label">YOUR PERSONAL READING SPACE</p>
+                <h1>Welcome back, {{ name }}!</h1>
+                <p>Discover new books, explore knowledge and enjoy reading.</p>
+              <a href="{{ url_for('explore_books') }}" class="student-primary-btn">
+    Explore Books →
+</a>
+            </div>
+
+            <div class="welcome-art">
+                <span>📖</span>
+                <span>📚</span>
+                <span>✨</span>
+            </div>
+        </section>
+
+        <section class="student-section">
+            <div class="student-section-heading">
+                <div>
+                    <h2>Your Reading Space</h2>
+                    <p>Everything you need for your reading journey.</p>
+                </div>
+            </div>
+
+            <div class="student-feature-grid">
+
+                <div class="student-feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Explore Books</h3>
+                    <p>Discover books across different subjects and categories.</p>
+                   <a href="{{ url_for('explore_books') }}">Browse Collection →</a>
+                </div>
+
+                <div class="student-feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>My Shelf</h3>
+                    <p>Keep your borrowed and selected books organised.</p>
+                    <a href="#">View My Shelf →</a>
+                </div>
+
+                <div class="student-feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>Digital Reader</h3>
+                    <p>Enjoy a comfortable reading experience online.</p>
+                    <a href="#">Start Reading →</a>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="student-footer">
+            © 2026 ReadSphere. Your world of books.
+        </footer>
+
+    </main>
+
+</body>
+</html>
